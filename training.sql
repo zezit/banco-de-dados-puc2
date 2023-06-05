@@ -30,7 +30,7 @@ WHERE Weight > 50 AND Weight < 700
 SELECT *
 FROM HumanResources.Employee
 WHERE MaritalStatus = 'M' AND
-    SalariedFlag = 1 
+    SalariedFlag = 1
 
 --? DESAFIO
 --? Um usuário chamado Peter Krebs está 
@@ -42,7 +42,7 @@ WHERE MaritalStatus = 'M' AND
 
 --- Versão simples e com muitas linhas
 SELECT BusinessEntityID, FirstName, LastName
-FROM Person.Person 
+FROM Person.Person
 WHERE FirstName = 'peter' AND LastName = 'krebs'
 
 SELECT EmailAddress
@@ -108,7 +108,8 @@ FROM Production.Product
 WHERE ProductID BETWEEN 1 AND 4
 
 --* 3º
-SELECT TOP(4) Name, ProductNumber
+SELECT TOP(4)
+    Name, ProductNumber
 FROM Production.Product
 ORDER BY ProductID asc
 
@@ -155,3 +156,71 @@ FROM Production.Product
 SELECT COUNT(*)
 FROM Production.Product
 WHERE Color = 'Red' AND ListPrice BETWEEN 500 AND 1000
+
+-- Utilizando GROUP BY
+
+--? Desafio
+--? Eu preciso saber quantas pessoas tem o 
+--? mesmo MiddleNam agrupadas por o MiddleName
+SELECT MiddleName, COUNT(MiddleName) AS "quantidade"
+FROM Person.Person
+GROUP BY MiddleName
+ORDER By "quantidade" asc
+
+--? Desafio
+--? Eu preciso saber em média qual é a 
+--? quantidade(quantity) que cada produto 
+--? é vendido na loja. 
+SELECT *
+FROM Production.Product
+
+SELECT ProductNumber, AVG(SafetyStockLevel) AS "media"
+FROM Production.Product
+GROUP BY ProductNumber
+ORDER BY "media" asc
+
+--? Desafio
+--? Eu quero saber qual foram as 10 
+--? vendas que no total tiveram os maiores 
+--? valor de venda(line total) por produto 
+--? do maior valor para o menor
+SELECT *
+FROM Sales.SalesOrderDetail
+
+SELECT TOP(10)
+    ProductID, SUM(LineTotal) AS "valor_venda_total"
+FROM Sales.SalesOrderDetail
+GROUP BY ProductID
+ORDER BY "valor_venda_total" DESC
+
+--? Desafio
+--? Eu preciso saber quantos produtos e
+--? qual e quantidade media de produtos 
+--? temos cadastrados nas nossas ordem 
+--? de serviço (WorkOrder), agrupados por
+--? producID
+SELECT *
+FROM Production.WorkOrder
+
+-- Simple query, just to get the ProductID, 
+-- the number of products and the average
+SELECT ProductID,
+    COUNT(ProductID) AS "quantidade_produtos",
+    AVG(OrderQty) AS "quantidade_media"
+FROM Production.WorkOrder
+GROUP BY ProductID
+ORDER BY "quantidade_media" DESC;
+
+-- Using JOIN and ON with Production.Product table to get 
+-- the product name and the product id
+SELECT workorder_table.ProductID,
+    product_table.Name,
+    COUNT(workorder_table.ProductID) AS "quantidade_produtos",
+    AVG(workorder_table.OrderQty) AS "quantidade_media"
+FROM Production.WorkOrder workorder_table
+    JOIN Production.Product product_table
+    ON product_table.ProductID = workorder_table.ProductID
+GROUP BY workorder_table.ProductID, product_table.Name
+ORDER BY "quantidade_media" DESC;
+
+
