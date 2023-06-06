@@ -223,4 +223,17 @@ FROM Production.WorkOrder workorder_table
 GROUP BY workorder_table.ProductID, product_table.Name
 ORDER BY "quantidade_media" DESC;
 
+-- Using HAVING
 
+--? Desafio 
+--? Estamos querendo identificar as provincias(stateProvinceId)
+--? com o maior numero de cadastros no nosso sistema, então é 
+--? preciso encontrar quais províncias (stateProvinceId) estão 
+--? registradas no banco de dados mais que 1000 vezes
+SELECT StateProvinceID
+FROM Person.Address
+
+SELECT StateProvinceID, COUNT(StateProvinceID)
+FROM Person.Address
+GROUP BY StateProvinceID
+HAVING COUNT(StateProvinceID) > 1000
